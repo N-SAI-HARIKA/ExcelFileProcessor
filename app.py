@@ -15,9 +15,9 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Process the Excel file and perform the necessary operations
-def process_excel(file_path):
-    # Load the data from the file
-    data = pd.read_excel(file_path, sheet_name='Form responses 1')
+def process_excel(file_path, sheet_name):
+    # Load the data from the selected sheet
+    data = pd.read_excel(file_path, sheet_name=sheet_name)
 
     # Select and rename the columns (strip whitespace from column names)
     data.columns = data.columns.str.strip()  # Removes trailing and leading spaces
@@ -50,12 +50,28 @@ def upload_file():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
 
-            # Process the file and get the updated file path
-            updated_file_path = process_excel(file_path)
+            # Get the list of sheet names in the uploaded Excel file
+            sheet_names = pd.ExcelFile(file_path).sheet_names
 
-            # Provide the download link for the updated file
+            # Provide a form to select the sheet if there are multiple sheets
+            if len(sheet_names) > 1:
+                return render_template('select_sheet.html', sheet_names=sheet_names, file_path=filename)
+            
+            # If only one sheet, process it directly
+            updated_file_path = process_excel(file_path, sheet_names[0])
             return render_template('download.html', file_path=updated_file_path)
     return render_template('upload.html')
+
+@app.route('/process/<filename>', methods=['POST'])
+def process_selected_sheet(filename):
+    # Get the selected sheet name from the form
+    selected_sheet = request.form['sheet_name']
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    # Process the selected sheet and get the updated file path
+    updated_file_path = process_excel(file_path, selected_sheet)
+
+    return render_template('download.html', file_path=updated_file_path)
 
 @app.route('/download/<filename>')
 def download_file(filename):
