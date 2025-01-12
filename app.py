@@ -26,7 +26,7 @@ def process_excel(file_path, sheet_name):
 
     # Format the output with double quotes
     formatted_data['Formatted Output'] = formatted_data.apply(
-        lambda row: f'"{row["Name"]}", "{row["Registration No."]}", "{row["Department"]}"',
+        lambda row: f'{{"{row["Name"]}", "{row["Registration No."]}", "{row["Department"]}"}},',
         axis=1
     )
 
