@@ -24,9 +24,10 @@ def process_excel(file_path, sheet_name):
     formatted_data = data[['Full name', 'Registration No.', 'Department']]
     formatted_data.columns = ['Name', 'Registration No.', 'Department']
 
+    formatted_data['Zeros']='000000000000000'
     # Format the output with double quotes
     formatted_data['Formatted Output'] = formatted_data.apply(
-        lambda row: f'{{"{row["Name"]}", "{row["Registration No."]}", "{row["Department"]}"}},',
+        lambda row: f'{{"{row["Zeros"]}","{row["Name"]}", "{row["Registration No."]}", "{row["Department"]}"}},',
         axis=1
     )
 
