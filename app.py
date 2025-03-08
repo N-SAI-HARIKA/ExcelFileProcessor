@@ -21,13 +21,13 @@ def process_excel(file_path, sheet_name):
 
     # Select and rename the columns (strip whitespace from column names)
     data.columns = data.columns.str.strip()  # Removes trailing and leading spaces
-    formatted_data = data[['Full name', 'Registration No.', 'Department']]
-    formatted_data.columns = ['Name', 'Registration No.', 'Department']
+    formatted_data = data[['RF-ID','Full name', 'Registration No.', 'Department']]
+    formatted_data.columns = ['RF-ID','Name', 'Registration No.', 'Department']
 
     formatted_data['Zeros']='000000000000000'
     # Format the output with double quotes
     formatted_data['Formatted Output'] = formatted_data.apply(
-        lambda row: f'{{"{row["Zeros"]}","{row["Name"]}", "{row["Registration No."]}", "{row["Department"]}"}},',
+        lambda row: f'{{"{row["RF-ID"]}","{row["Name"]}", "{row["Registration No."]}", "{row["Department"]}"}},',
         axis=1
     )
 
