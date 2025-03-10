@@ -23,8 +23,7 @@ def process_excel(file_path, sheet_name):
     data.columns = data.columns.str.strip()  # Removes trailing and leading spaces
     formatted_data = data[['RF-ID','Full name', 'Registration No.', 'Department']]
     formatted_data.columns = ['RF-ID','Name', 'Registration No.', 'Department']
-
-    formatted_data['Zeros']='000000000000000'
+    formatted_data['RF-ID']=formatted_data['RF-ID'].astype(str).str.replace(r'\.0$', '', regex=True)
     # Format the output with double quotes
     formatted_data['Formatted Output'] = formatted_data.apply(
         lambda row: f'{{"{row["RF-ID"]}","{row["Name"]}", "{row["Registration No."]}", "{row["Department"]}"}},',
